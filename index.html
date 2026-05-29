@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="SSC WAR">
+<title>SSC CGL 2026 — War Plan</title>
+<link rel="manifest" href="manifest.json">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Orbitron:wght@700;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+:root{
+  --ink:#0a0a0a;--paper:#f5f0e8;--yellow:#facc15;--orange:#f97316;
+  --red:#ef4444;--green:#16a34a;--blue:#1d4ed8;--purple:#7c3aed;
+  --amber:#d97706;--teal:#0d9488;--pink:#db2777;--slate:#475569;
+  --card:#fffdf7;--border:#e2d9c8;--muted:#9ca3af;--faint:#f9f5ec;
+  --shadow:0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
+}
+
+html,body{
+  background:var(--paper);color:var(--ink);
+  font-family:'DM Mono',monospace;min-height:100vh;
+  overscroll-behavior:none;
+}
+
+/* ── HEADER ─────────────────────────────────── */
+#hdr{
+  position:sticky;top:0;z-index:100;
+  background:var(--ink);
+  padding:0 16px;
+  border-bottom:3px solid var(--yellow);
+}
+.hdr-top{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0 6px;
+}
+.hdr-left .tag{font-size:8px;letter-spacing:3px;color:var(--yellow);font-weight:500;}
+.hdr-left .title{
+  font-family:'Bebas Neue',sans-serif;font-size:24px;
+  color:#fff;letter-spacing:2px;line-height:1;
+}
+.hdr-right{text-align:right;}
+.hdr-pct{
+  font-family:'Orbitron',monospace;font-size:26px;font-weight:900;
+  color:var(--yellow);line-height:1;
+}
+.hdr-sub{font-size:9px;color:var(--muted);margin-top:2px;}
+
+.master-bar{height:3px;background:#1f1f1f;margin:0 -16px;}
+.master-fill{height:100%;background:linear-gradient(90deg,var(--yellow),var(--orange));transition:width .5s cubic-bezier(.4,0,.2,1);}
+
+.tabs{display:flex;gap:0;margin:0 -16px;border-top:1px solid #222;}
+.tab{
+  flex:1;padding:10px 4px 8px;
+  font-size:9px;font-weight:500;letter-spacing:1.5px;
+  color:var(--muted);background:var(--ink);border:none;
+  border-bottom:2px solid transparent;transition:all .2s;
+  cursor:pointer;
+}
+.tab.on{color:var(--yellow);border-bottom-color:var(--yellow);}
+
+/* ── MAIN ───────────────────────────────────── */
+#main{padding:14px 14px 80px;max-width:480px;margin:0 auto;}
+
+/* ── DAY GRID ───────────────────────────────── */
+.grid-label{font-size:8px;letter-spacing:2px;color:var(--muted);margin-bottom:8px;font-weight:500;}
+.day-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:16px;}
+.dg-btn{
+  aspect-ratio:1;border-radius:6px;font-size:10px;font-weight:700;
+  border:1.5px solid var(--border);background:var(--card);
+  color:var(--muted);cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;
+}
+.dg-btn.sel{background:var(--ink);border-color:var(--ink);color:var(--yellow);}
+.dg-btn.done{background:#dcfce7;border-color:#86efac;color:#16a34a;}
+.dg-btn.part{background:#fef9c3;border-color:#fde047;color:#854d0e;}
+.dg-btn.mock::after{content:'★';position:absolute;font-size:6px;top:1px;right:2px;color:var(--orange);}
+.dg-btn{position:relative;}
+
+/* ── DAY CARD ───────────────────────────────── */
+.day-card{
+  background:var(--ink);border-radius:16px;padding:16px;
+  margin-bottom:14px;position:relative;overflow:hidden;
+}
+.day-card::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(250,204,21,.15),transparent 70%);
+  pointer-events:none;
+}
+.dc-eyebrow{font-size:8px;letter-spacing:3px;color:var(--muted);margin-bottom:4px;}
+.dc-title{
+  font-family:'Bebas Neue',sans-serif;font-size:26px;
+  color:#fff;letter-spacing:1px;line-height:1.1;margin-bottom:12px;
+}
+.dc-title span{font-size:14px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:0;}
+.dc-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;}
+.dc-pct{
+  font-family:'Orbitron',monospace;font-size:32px;font-weight:900;
+  color:var(--yellow);line-height:1;
+}
+.dc-total{font-size:10px;color:var(--muted);line-height:1.4;}
+.dc-bar{height:4px;background:#1f1f1f;border-radius:4px;overflow:hidden;margin-bottom:14px;}
+.dc-fill{height:100%;border-radius:4px;background:var(--yellow);transition:width .4s;}
+
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.stat-pill{border-radius:8px;padding:7px 4px;text-align:center;border:1px solid;}
+.stat-pill .sv{font-size:11px;font-weight:700;font-family:'Orbitron',monospace;}
+.stat-pill .sl{font-size:7px;letter-spacing:1px;margin-top:2px;opacity:.8;}
+
+/* ── SECTION ────────────────────────────────── */
+.sec-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sec-bar{width:3px;height:16px;border-radius:2px;flex-shrink:0;}
+.sec-lbl{font-size:8px;letter-spacing:2px;font-weight:700;}
+.sec-ct{font-size:8px;color:var(--muted);margin-left:auto;}
+
+/* ── LECTURE ITEM ───────────────────────────── */
+.lec-list{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+.lec{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;border-radius:12px;
+  border:1.5px solid var(--border);background:var(--card);
+  cursor:pointer;transition:all .18s;
+  -webkit-user-select:none;user-select:none;
+}
+.lec:active{transform:scale(.97);}
+.lec.done{opacity:.5;background:var(--faint);}
+.lec.done .ln{text-decoration:line-through;color:var(--muted);}
+
+.chk{
+  width:22px;height:22px;border-radius:6px;
+  border:2px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .18s;font-size:12px;font-weight:700;
+}
+.chk.on{color:#fff;}
+
+.accent-bar{width:3px;border-radius:2px;flex-shrink:0;}
+.lec-body{flex:1;min-width:0;}
+.ln{font-size:12px;font-weight:700;line-height:1.3;transition:all .18s;}
+.ls{font-size:10px;color:var(--muted);margin-top:2px;}
+.lt{font-size:11px;font-weight:700;flex-shrink:0;}
+
+/* ── SPECIAL ITEMS ──────────────────────────── */
+.special-lec{
+  background:var(--ink);border-color:var(--ink);
+  border-radius:12px;
+}
+.special-lec .ln{color:#fff;}
+.special-lec .ls{color:var(--muted);}
+
+.eng-lec{background:linear-gradient(135deg,#f0fdf4,#dcfce7);}
+.empty-note{
+  padding:12px 14px;border-radius:10px;
+  background:var(--faint);border:1.5px dashed var(--border);
+  font-size:11px;color:var(--muted);text-align:center;
+}
+.mock-badge{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:10px;
+  background:#fff7ed;border:1.5px solid #fed7aa;
+  margin-bottom:18px;font-size:11px;color:#9a3412;font-weight:700;
+}
+
+/* ── NAV ────────────────────────────────────── */
+.nav-row{display:flex;gap:8px;margin-top:4px;}
+.nav-prev,.nav-next{
+  flex:1;padding:14px;border-radius:12px;
+  font-size:13px;font-weight:700;cursor:pointer;border:none;
+  font-family:'DM Mono',monospace;transition:all .15s;
+}
+.nav-prev{background:var(--faint);color:var(--ink);border:1.5px solid var(--border);}
+.nav-next{background:var(--ink);color:var(--yellow);}
+.nav-next:active,.nav-prev:active{transform:scale(.97);}
+
+/* ── TIMETABLE ──────────────────────────────── */
+.tt-hero{
+  background:var(--ink);border-radius:16px;
+  padding:16px;margin-bottom:14px;
+}
+.tt-hero-tag{font-size:8px;letter-spacing:3px;color:var(--yellow);margin-bottom:4px;}
+.tt-hero-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:1px;margin-bottom:4px;}
+.tt-hero-sub{font-size:10px;color:var(--muted);line-height:1.5;}
+.speed-badge{
+  display:inline-block;margin-top:8px;padding:4px 10px;
+  background:#1f2937;border-radius:20px;
+  font-size:9px;font-weight:700;color:var(--yellow);letter-spacing:1px;
+}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.leg{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--muted);}
+.leg-dot{width:7px;height:7px;border-radius:50%;}
+
+.tt-list{display:flex;flex-direction:column;gap:5px;margin-bottom:16px;}
+.tt-row{
+  display:flex;gap:10px;padding:10px 12px;
+  border-radius:10px;border:1.5px solid;
+}
+.tt-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.tt-slot{font-size:8px;opacity:.6;font-weight:500;margin-bottom:2px;}
+.tt-act{font-size:11px;font-weight:700;}
+
+.rules-box{
+  background:#fff1f2;border:1.5px solid #fecdd3;
+  border-radius:14px;padding:14px;
+}
+.rules-tag{font-size:8px;letter-spacing:2px;color:var(--red);font-weight:700;margin-bottom:10px;}
+.rule{display:flex;gap:8px;font-size:10px;color:#9f1239;margin-bottom:7px;line-height:1.5;}
+.rn{color:var(--red);font-weight:700;flex-shrink:0;}
+
+/* ── PROGRESS ───────────────────────────────── */
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;}
+.ov-card{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:14px;padding:14px;text-align:center;
+}
+.ov-val{font-family:'Orbitron',monospace;font-size:26px;font-weight:900;line-height:1;}
+.ov-lbl{font-size:9px;letter-spacing:1px;color:var(--muted);margin-top:4px;}
+.ov-sub{font-size:9px;color:var(--muted);margin-top:2px;}
+
+.prog-section-lbl{font-size:8px;letter-spacing:2px;font-weight:700;margin-bottom:8px;margin-top:16px;}
+.prog-item{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:12px;padding:10px 12px;margin-bottom:6px;
+}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.prog-name-row{display:flex;align-items:center;gap:6px;}
+.prog-dot{width:7px;height:7px;border-radius:50%;}
+.prog-name{font-size:11px;font-weight:700;}
+.prog-count{font-size:11px;font-weight:700;}
+.prog-bar{height:5px;background:var(--border);border-radius:5px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:5px;transition:width .4s;}
+.prog-sub{font-size:9px;color:var(--muted);margin-top:4px;}
+
+.r-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px;}
+.r-card{
+  padding:9px 10px;border-radius:10px;
+  border:1.5px solid var(--border);background:var(--card);
+}
+.r-card.rdone{background:#f0fdf4;border-color:#86efac;}
+.r-name{font-size:10px;font-weight:700;margin-bottom:2px;}
+.r-day{font-size:9px;color:var(--muted);}
+
+.eng-grid{display:flex;flex-wrap:wrap;gap:4px;}
+.eng-sq{
+  width:30px;height:30px;border-radius:6px;border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:var(--muted);background:var(--card);
+}
+.eng-sq.done{background:#dcfce7;border-color:#86efac;color:#16a34a;}
+
+/* ── COMPLETE FLASH ─────────────────────────── */
+@keyframes flash{0%{opacity:1}50%{opacity:0.3}100%{opacity:1}}
+.flash{animation:flash .3s ease;}
+
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.chk.on{animation:pop .25s ease;}
+</style>
+</head>
+<body>
+<div id="hdr">
+  <div class="hdr-top">
+    <div class="hdr-left">
+      <div class="tag">SSC CGL 2026 · 1.5× SPEED</div>
+      <div class="title">50-DAY WAR PLAN</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-pct" id="hPct">0%</div>
+      <div class="hdr-sub" id="hSub">0/50 days done</div>
+    </div>
+  </div>
+  <div class="master-bar"><div class="master-fill" id="mFill" style="width:0%"></div></div>
+  <div class="tabs">
+    <button class="tab on" id="t-tracker" onclick="switchTab('tracker')">📋 TRACKER</button>
+    <button class="tab" id="t-timetable" onclick="switchTab('timetable')">⏰ SCHEDULE</button>
+    <button class="tab" id="t-progress" onclick="switchTab('progress')">📊 PROGRESS</button>
+  </div>
+</div>
+<div id="main"></div>
+
+<script>
+// ============ DATA ============
+const PLAN=[{"day":1,"q":[["Number System",1,50],["Number System",2,50],["Number System",3,50],["Number System",4,50],["Number System",5,50]],"qm":250,"g":[["Ancient History",1,40],["Ancient History",2,40]],"r":"Direction Test","rm":100,"mock":false},{"day":2,"q":[["Number System",6,50],["Number System",7,50],["Number System",8,50],["Number System",9,50],["Number System",10,50]],"qm":250,"g":[["Ancient History",3,40],["Ancient History",4,40]],"r":"Sitting Arrangement","rm":120,"mock":false},{"day":3,"q":[["Number System",11,50],["Number System",12,50],["Number System",13,50],["Number System",14,50],["Number System",15,50]],"qm":250,"g":[["Ancient History",5,40],["Ancient History",6,40]],"r":"Ranking Test","rm":80,"mock":false},{"day":4,"q":[["Number System",16,50],["Number System",17,50],["Number System",18,50],["Number System",19,50],["Number System",20,50]],"qm":250,"g":[["Ancient History",7,40],["Ancient History",8,40]],"r":"Blood Relation","rm":100,"mock":false},{"day":5,"q":[["Number System",21,50],["Number System",22,50],["Number System",23,50],["LCM HCF",1,50],["LCM HCF",2,50]],"qm":250,"g":[["Ancient History",9,40],["Ancient History",10,40]],"r":"Alphabet Test","rm":80,"mock":false},{"day":6,"q":[["LCM HCF",3,50],["LCM HCF",4,50],["LCM HCF",5,50],["LCM HCF",6,50],["LCM HCF",7,50]],"qm":250,"g":[["Ancient History",11,40],["Ancient History",12,40]],"r":"Coding-Decoding","rm":120,"mock":false},{"day":7,"q":[["Simplification",1,47],["Simplification",2,47],["Simplification",3,47],["Simplification",4,47],["Simplification",5,47]],"qm":235,"g":[["Medieval History",1,40],["Medieval History",2,40]],"r":"Analogy","rm":100,"mock":true},{"day":8,"q":[["Simplification",6,47],["Simplification",7,47],["Simplification",8,47],["Simplification",9,47],["Simplification",10,47]],"qm":235,"g":[["Medieval History",3,40],["Medieval History",4,40]],"r":"Classification","rm":100,"mock":false},{"day":9,"q":[["Simplification",11,47],["Simplification",12,47],["Average",1,50],["Average",2,50],["Average",3,50]],"qm":244,"g":[["Medieval History",5,40],["Medieval History",6,40]],"r":"Series","rm":120,"mock":false},{"day":10,"q":[["Average",4,50],["Average",5,50],["Average",6,50],["Average",7,50],["Average",8,50]],"qm":250,"g":[["Medieval History",7,40],["Medieval History",8,40]],"r":"Cube and Dice","rm":100,"mock":false},{"day":11,"q":[["Average",9,50],["Average",10,50],["Ratio & Proportion",1,50],["Ratio & Proportion",2,50],["Ratio & Proportion",3,50]],"qm":250,"g":[["Modern History",1,40],["Modern History",2,40]],"r":"Venn Diagram","rm":80,"mock":false},{"day":12,"q":[["Ratio & Proportion",4,50],["Ratio & Proportion",5,50],["Ratio & Proportion",6,50],["Ratio & Proportion",7,50],["Ratio & Proportion",8,50]],"qm":250,"g":[["Modern History",3,40],["Modern History",4,40]],"r":"Syllogism","rm":100,"mock":false},{"day":13,"q":[["Ratio & Proportion",9,50],["Ratio & Proportion",10,50],["Ratio & Proportion",11,50],["Ratio & Proportion",12,50],["Ratio & Proportion",13,50]],"qm":250,"g":[["Modern History",5,40],["Modern History",6,40]],"r":"Puzzle","rm":120,"mock":false},{"day":14,"q":[["Partnership",1,50],["Partnership",2,50],["Partnership",3,50],["Partnership",4,50],["Mixture & Alligation",1,50]],"qm":250,"g":[["Modern History",7,40],["Modern History",8,40]],"r":"Missing Number","rm":80,"mock":true},{"day":15,"q":[["Mixture & Alligation",2,50],["Mixture & Alligation",3,50],["Mixture & Alligation",4,50],["Mixture & Alligation",5,50],["Mixture & Alligation",6,50]],"qm":250,"g":[["Modern History",9,40],["Polity",1,40]],"r":"Math Operation","rm":80,"mock":false},{"day":16,"q":[["Mixture & Alligation",7,50],["Mixture & Alligation",8,50],["Mixture & Alligation",9,50],["Mixture & Alligation",10,50],["Profit & Loss",1,53]],"qm":253,"g":[["Polity",2,40],["Polity",3,40]],"r":"Sequence of Words","rm":80,"mock":false},{"day":17,"q":[["Profit & Loss",2,53],["Profit & Loss",3,53],["Profit & Loss",4,53],["Profit & Loss",5,53],["Profit & Loss",6,53]],"qm":265,"g":[["Polity",4,40],["Polity",5,40]],"r":"Paper Cut & Fold","rm":100,"mock":false},{"day":18,"q":[["Profit & Loss",7,53],["Profit & Loss",8,53],["Profit & Loss",9,53],["Profit & Loss",10,53],["Profit & Loss",11,53]],"qm":265,"g":[["Polity",6,40],["Polity",7,40]],"r":"Matrix Test","rm":80,"mock":false},{"day":19,"q":[["Profit & Loss",12,53],["Profit & Loss",13,53],["Profit & Loss",14,53],["Profit & Loss",15,53]],"qm":212,"g":[["Polity",8,40],["Polity",9,40]],"r":"Embedded Figure","rm":80,"mock":false},{"day":20,"q":[["Profit & Loss",16,53],["Time & Work",1,53],["Time & Work",2,53],["Time & Work",3,53],["Time & Work",4,53]],"qm":265,"g":[["Polity",10,40],["Polity",11,40]],"r":"Incomplete Figure","rm":80,"mock":false},{"day":21,"q":[["Time & Work",5,53],["Time & Work",6,53],["Time & Work",7,53],["Time & Work",8,53]],"qm":212,"g":[["Polity",12,40],["Polity",13,40]],"r":"Mirror & Water Image","rm":100,"mock":true},{"day":22,"q":[["Time & Work",9,53],["Time & Work",10,53],["Time & Work",11,53],["Time & Work",12,53],["Time & Work",13,53]],"qm":265,"g":[["Polity",14,40],["Polity",15,40]],"r":"Statement & Assumptions","rm":100,"mock":false},{"day":23,"q":[["Time & Work",14,53],["Time & Work",15,53],["Time & Work",16,53],["Time & Work",17,53]],"qm":212,"g":[["Polity",16,40],["Polity",17,40]],"r":"Statement & Conclusions","rm":100,"mock":false},{"day":24,"q":[["Time & Work",18,53],["Time & Work",19,53],["Time & Work",20,53],["Time & Distance",1,53],["Time & Distance",2,53]],"qm":265,"g":[["Geography",1,40],["Geography",2,40]],"r":"Input & Output","rm":100,"mock":false},{"day":25,"q":[["Time & Distance",3,53],["Time & Distance",4,53],["Time & Distance",5,53],["Time & Distance",6,53]],"qm":212,"g":[["Geography",3,40],["Geography",4,40]],"r":"Data Sufficiency","rm":100,"mock":false},{"day":26,"q":[["Time & Distance",7,53],["Time & Distance",8,53],["Time & Distance",9,53],["Time & Distance",10,53],["Time & Distance",11,53]],"qm":265,"g":[["Geography",5,40],["Geography",6,40]],"r":null,"rm":0,"mock":false},{"day":27,"q":[["Time & Distance",12,53],["Time & Distance",13,53],["Time & Distance",14,53],["Time & Distance",15,53]],"qm":212,"g":[["Geography",7,40],["Geography",8,40]],"r":null,"rm":0,"mock":false},{"day":28,"q":[["Time & Distance",16,53],["Time & Distance",17,53],["Time & Distance",18,53],["Time & Distance",19,53],["Time & Distance",20,53]],"qm":265,"g":[["Geography",9,40],["Geography",10,40]],"r":null,"rm":0,"mock":true},{"day":29,"q":[["Time & Distance",21,53],["Time & Distance",22,53],["Geometry",1,53],["Geometry",2,53]],"qm":212,"g":[["Geography",11,40],["Geography",12,40]],"r":null,"rm":0,"mock":false},{"day":30,"q":[["Geometry",3,53],["Geometry",4,53],["Geometry",5,53],["Geometry",6,53],["Geometry",7,53]],"qm":265,"g":[["Geography",13,40],["Geography",14,40]],"r":null,"rm":0,"mock":false},{"day":31,"q":[["Geometry",8,53],["Geometry",9,53],["Geometry",10,53],["Geometry",11,53]],"qm":212,"g":[["Geography",15,40],["Geography",16,40]],"r":null,"rm":0,"mock":false},{"day":32,"q":[["Geometry",12,53],["Geometry",13,53],["Geometry",14,53],["Geometry",15,53],["Geometry",16,53]],"qm":265,"g":[["Geography",17,40],["Geography",18,40]],"r":null,"rm":0,"mock":false},{"day":33,"q":[["Geometry",17,53],["Geometry",18,53],["Geometry",19,53],["Geometry",20,53]],"qm":212,"g":[["Geography",19,40],["Geography",20,40]],"r":null,"rm":0,"mock":false},{"day":34,"q":[["Geometry",21,53],["Geometry",22,53],["Geometry",23,53],["Geometry",24,53],["Geometry",25,53]],"qm":265,"g":[["Geography",21,40],["Geography",22,40]],"r":null,"rm":0,"mock":false},{"day":35,"q":[["Geometry",26,53],["Geometry",27,53],["Geometry",28,53],["Mensuration 2D&3D",1,53]],"qm":212,"g":[["Geography",23,40],["Geography",24,40]],"r":null,"rm":0,"mock":true},{"day":36,"q":[["Mensuration 2D&3D",2,53],["Mensuration 2D&3D",3,53],["Mensuration 2D&3D",4,53],["Mensuration 2D&3D",5,53],["Mensuration 2D&3D",6,53]],"qm":265,"g":[["Geography",25,40],["Geography",26,40]],"r":null,"rm":0,"mock":false},{"day":37,"q":[["Mensuration 2D&3D",7,53],["Mensuration 2D&3D",8,53],["Mensuration 2D&3D",9,53],["Mensuration 2D&3D",10,53],["Mensuration 2D&3D",11,53]],"qm":265,"g":[["Geography",27,40],["Economics",1,40]],"r":null,"rm":0,"mock":false},{"day":38,"q":[["Mensuration 2D&3D",12,53],["Mensuration 2D&3D",13,53],["Mensuration 2D&3D",14,53],["Mensuration 2D&3D",15,53]],"qm":212,"g":[["Economics",2,40],["Economics",3,40]],"r":null,"rm":0,"mock":false},{"day":39,"q":[["Mensuration 2D&3D",16,53],["Mensuration 2D&3D",17,53],["Mensuration 2D&3D",18,53],["Mensuration 2D&3D",19,53],["Mensuration 2D&3D",20,53]],"qm":265,"g":[["Economics",4,40],["Economics",5,40]],"r":null,"rm":0,"mock":false},{"day":40,"q":[["Mensuration 2D&3D",21,53],["Mensuration 2D&3D",22,53],["Mensuration 2D&3D",23,53],["Mensuration 2D&3D",24,53]],"qm":212,"g":[["Economics",6,40],["Economics",7,40]],"r":null,"rm":0,"mock":false},{"day":41,"q":[["Mensuration 2D&3D",25,53],["Mensuration 2D&3D",26,53],["Mensuration 2D&3D",27,53],["Trigonometry",1,53],["Trigonometry",2,53]],"qm":265,"g":[["Economics",8,40],["Economics",9,40]],"r":null,"rm":0,"mock":false},{"day":42,"q":[["Trigonometry",3,53],["Trigonometry",4,53],["Trigonometry",5,53],["Trigonometry",6,53]],"qm":212,"g":[["Economics",10,40],["Economics",11,40]],"r":null,"rm":0,"mock":true},{"day":43,"q":[["Trigonometry",7,53],["Trigonometry",8,53],["Trigonometry",9,53],["Trigonometry",10,53],["Trigonometry",11,53]],"qm":265,"g":[["Static GK",1,40],["Static GK",2,40]],"r":null,"rm":0,"mock":false},{"day":44,"q":[["Trigonometry",12,53],["Trigonometry",13,53],["Trigonometry",14,53],["Trigonometry",15,53]],"qm":212,"g":[["Static GK",3,40],["Static GK",4,40]],"r":null,"rm":0,"mock":false},{"day":45,"q":[["Trigonometry",16,53],["Trigonometry",17,53],["Trigonometry",18,53],["Trigonometry",19,53],["Trigonometry",20,53]],"qm":265,"g":[["Static GK",5,40],["Static GK",6,40]],"r":null,"rm":0,"mock":false},{"day":46,"q":[["Trigonometry",21,53],["Statistics",1,47],["Statistics",2,47],["Statistics",3,47],["Statistics",4,47]],"qm":241,"g":[["Static GK",7,40],["Static GK",8,40]],"r":null,"rm":0,"mock":false},{"day":47,"q":[["Statistics",5,47],["Statistics",6,47],["Statistics",7,47],["Statistics",8,47],["Statistics",9,47]],"qm":235,"g":[["Static GK",9,40],["Static GK",10,40]],"r":null,"rm":0,"mock":false},{"day":48,"q":[["Statistics",10,47],["Probability",1,47],["Probability",2,47],["Probability",3,47],["Probability",4,47]],"qm":235,"g":[["Static GK",11,40],["Science",1,40]],"r":null,"rm":0,"mock":false},{"day":49,"q":[["Probability",5,47],["Probability",6,47],["Probability",7,47],["Probability",8,47],["Probability",9,47]],"qm":235,"g":[["Science",2,40],["Science",3,40]],"r":null,"rm":0,"mock":true},{"day":50,"q":[["Probability",10,47],["Probability",11,47],["Probability",12,47],["Probability",13,47],["Probability",14,47]],"qm":235,"g":[],"r":null,"rm":0,"mock":true}];
+
+const QT={"Number System":23,"LCM HCF":7,"Simplification":12,"Average":10,"Ratio & Proportion":13,"Partnership":4,"Mixture & Alligation":10,"Profit & Loss":16,"Time & Work":20,"Time & Distance":22,"Geometry":28,"Mensuration 2D&3D":27,"Trigonometry":21,"Statistics":10,"Probability":14};
+const GT={"Ancient History":12,"Medieval History":8,"Modern History":9,"Polity":17,"Geography":27,"Economics":11,"Static GK":11,"Science":3};
+const QC={"Number System":"#f97316","LCM HCF":"#fb923c","Simplification":"#eab308","Average":"#84cc16","Ratio & Proportion":"#22c55e","Partnership":"#10b981","Mixture & Alligation":"#0d9488","Profit & Loss":"#1d4ed8","Time & Work":"#6366f1","Time & Distance":"#7c3aed","Geometry":"#a855f7","Mensuration 2D&3D":"#ec4899","Trigonometry":"#ef4444","Statistics":"#475569","Probability":"#0284c7"};
+const GC={"Ancient History":"#d97706","Medieval History":"#b45309","Modern History":"#92400e","Polity":"#1d4ed8","Geography":"#15803d","Economics":"#7c3aed","Static GK":"#be185d","Science":"#0369a1"};
+
+const TT=[
+  {slot:"5:30–6:00 AM",act:"Wake up · freshen · 10-min walk",type:"brk"},
+  {slot:"6:00–6:17 AM",act:"English — Vocabulary (25 words)",type:"eng"},
+  {slot:"6:17–7:07 AM",act:"QUANT Lecture 1  @1.5× (~50 min)",type:"q"},
+  {slot:"7:07–7:57 AM",act:"QUANT Lecture 2  @1.5× (~50 min)",type:"q"},
+  {slot:"7:57–8:25 AM",act:"Breakfast + break",type:"brk"},
+  {slot:"8:25–9:15 AM",act:"QUANT Lecture 3  @1.5× (~50 min)",type:"q"},
+  {slot:"9:15–10:05 AM",act:"QUANT Lecture 4  @1.5× (~50 min)",type:"q"},
+  {slot:"10:05–10:55 AM",act:"QUANT Lecture 5  @1.5× (~50 min)",type:"q"},
+  {slot:"10:55–11:10 AM",act:"Break · water · stretch",type:"brk"},
+  {slot:"11:10–11:40 AM",act:"English — Error Detection (30 sentences)",type:"eng"},
+  {slot:"11:40–12:20 PM",act:"GK Lecture 1  @1.5× (~40 min)",type:"gk"},
+  {slot:"12:20–1:20 PM",act:"Lunch + rest",type:"brk"},
+  {slot:"1:20–2:00 PM",act:"GK Lecture 2  @1.5× (~40 min)",type:"gk"},
+  {slot:"2:00–3:40 PM",act:"REASONING — One Shot  @1.5× (Days 1–25)",type:"r"},
+  {slot:"3:40–4:10 PM",act:"English — 2 RC passages + 10 PYQs",type:"eng"},
+  {slot:"4:10–5:40 PM",act:"🔥 PYQ SPRINT — 20 Qs from today's Quant topic",type:"pyq"},
+  {slot:"5:40–6:40 PM",act:"📖 REVISION — Formulas + yesterday's topic re-test",type:"rev"},
+  {slot:"6:40–7:10 PM",act:"Break · evening walk",type:"brk"},
+  {slot:"7:10–8:00 PM",act:"GK Revision — re-read today's notes + 10-Q quiz",type:"gk"},
+  {slot:"8:00–8:30 PM",act:"English — 20 vocab revision",type:"eng"},
+  {slot:"8:30–9:00 PM",act:"Dinner + wind down",type:"brk"},
+  {slot:"9:00–9:30 PM",act:"Tomorrow's plan · note doubts",type:"rev"},
+  {slot:"9:30 PM",act:"SLEEP — 8 hrs non-negotiable",type:"brk"},
+];
+
+const RULES=[
+  "No skipping. Missed a day? Split across next 2 days.",
+  "English DAILY — even sick days: minimum 15 min vocab.",
+  "Sleep 8 hrs. Brain consolidates everything during sleep.",
+  "Every Sunday: revise all Quant of that week (1 PYQ each).",
+  "Days 43–50: STOP new lectures. Only PYQs, mocks, revision.",
+  "Never exceed 13 hrs/day — quality over quantity always.",
+];
+
+// ============ STATE ============
+const SK='ssc15x_v3';
+let chk={};
+try{chk=JSON.parse(localStorage.getItem(SK)||'{}');}catch{}
+let sel=1, curTab='tracker';
+function save(){try{localStorage.setItem(SK,JSON.stringify(chk));}catch{}}
+
+// ============ UTILS ============
+function fmt(m){
+  if(!m)return'—';
+  const h=Math.floor(m/60),mn=m%60;
+  return h>0?(mn>0?`${h}h${mn}m`:`${h}h`):`${mn}m`;
+}
+function dayKeys(d){
+  return[
+    ...d.q.map(q=>`q_${q[0]}_${q[1]}`),
+    ...d.g.map(g=>`g_${g[0]}_${g[1]}`),
+    ...(d.r?[`r_${d.r}`]:[]),
+    `eng_${d.day}`
+  ];
+}
+function overall(){
+  let tot=0,dn=0;
+  PLAN.forEach(d=>{const ks=dayKeys(d);tot+=ks.length;dn+=ks.filter(k=>chk[k]).length;});
+  return{tot,dn,pct:tot?Math.round(dn/tot*100):0};
+}
+function doneCount(){return PLAN.filter(d=>{const ks=dayKeys(d);return ks.length>0&&ks.every(k=>chk[k]);}).length;}
+
+// ============ TOGGLE ============
+function tog(k,el){
+  chk[k]=!chk[k];save();
+  // Update just this element for snappiness
+  const chkEl=el.querySelector('.chk');
+  const lnEl=el.querySelector('.ln');
+  if(chk[k]){
+    el.classList.add('done');
+    chkEl.classList.add('on');
+    chkEl.innerHTML='✓';
+  } else {
+    el.classList.remove('done');
+    chkEl.classList.remove('on');
+    chkEl.innerHTML='';
+  }
+  renderHeader();
+  // Update day grid button
+  updateDayBtn(sel);
+}
+
+function switchTab(t){
+  curTab=t;
+  ['tracker','timetable','progress'].forEach(x=>{
+    document.getElementById('t-'+x).classList.toggle('on',x===t);
+  });
+  renderMain();
+}
+
+function goDay(d){sel=d;renderMain();}
+
+// ============ HEADER ============
+function renderHeader(){
+  const {pct,dn,tot}=overall();
+  const dc=doneCount();
+  document.getElementById('hPct').textContent=pct+'%';
+  document.getElementById('hSub').textContent=dc+'/50 days done';
+  document.getElementById('mFill').style.width=pct+'%';
+}
+
+function updateDayBtn(d){
+  const btn=document.getElementById('dg'+d);
+  if(!btn)return;
+  const pd=PLAN[d-1];
+  const ks=dayKeys(pd);
+  const done=ks.length>0&&ks.every(k=>chk[k]);
+  const part=!done&&ks.some(k=>chk[k]);
+  btn.className='dg-btn'+(pd.mock?' mock':'')+(d===sel?' sel':done?' done':part?' part':'');
+}
+
+// ============ TRACKER ============
+function renderTracker(){
+  const d=PLAN[sel-1];
+  const ks=dayKeys(d);
+  const dn=ks.filter(k=>chk[k]).length;
+  const pct=ks.length?Math.round(dn/ks.length*100):0;
+  const dayDone=ks.length>0&&ks.every(k=>chk[k]);
+
+  // Day grid
+  let g='<div class="grid-label">SELECT DAY</div><div class="day-grid">';
+  PLAN.forEach(p=>{
+    const pks=dayKeys(p);
+    const pd=pks.length>0&&pks.every(k=>chk[k]);
+    const pp=!pd&&pks.some(k=>chk[k]);
+    const cls='dg-btn'+(p.mock?' mock':'')+(p.day===sel?' sel':pd?' done':pp?' part':'');
+    g+=`<button id="dg${p.day}" class="${cls}" onclick="goDay(${p.day})">${p.day}</button>`;
+  });
+  g+='</div>';
+
+  // Topic
+  const topic=d.q.length>0?d.q[0][0]:'Final Push';
+  const multi=d.q.length>0&&d.q[d.q.length-1][0]!==d.q[0][0];
+
+  // Day card
+  const qMin=d.qm, gMin=d.g.reduce((s,g)=>s+g[2],0), rMin=d.rm||0;
+  const card=`<div class="day-card">
+    <div class="dc-eyebrow">DAY ${sel} OF 50 ${d.mock?'· ★ MOCK TEST':''}
+      ${sel<=25?' · REASONING DAY':' · PYQ SPRINT DAY'}</div>
+    <div class="dc-title">${topic}${multi?` <span>+more</span>`:''}</div>
+    <div class="dc-row">
+      <div class="dc-pct">${pct}%</div>
+      <div class="dc-total">
+        Quant: ${fmt(qMin)}<br>
+        GK: ${fmt(gMin)}<br>
+        ${d.r?`Reason: ${fmt(rMin)}<br>`:``}
+        English: 1h30m
+      </div>
+    </div>
+    <div class="dc-bar"><div class="dc-fill" style="width:${pct}%"></div></div>
+    <div class="stat-row">
+      <div class="stat-pill" style="background:#0f172a;border-color:#1e3a5f">
+        <div class="sv" style="color:#3b82f6">${fmt(qMin)}</div><div class="sl" style="color:#3b82f6">QUANT</div></div>
+      <div class="stat-pill" style="background:#1c1003;border-color:#78350f">
+        <div class="sv" style="color:#f59e0b">${fmt(gMin)}</div><div class="sl" style="color:#f59e0b">GK/GS</div></div>
+      <div class="stat-pill" style="background:#1a0a2e;border-color:#4c1d95">
+        <div class="sv" style="color:#a855f7">${fmt(rMin)||'—'}</div><div class="sl" style="color:#a855f7">LOGIC</div></div>
+      <div class="stat-pill" style="background:#022c22;border-color:#065f46">
+        <div class="sv" style="color:#10b981">1h30m</div><div class="sl" style="color:#10b981">ENG</div></div>
+    </div>
+  </div>`;
+
+  // Mock badge
+  const mock=d.mock?`<div class="mock-badge">★ MOCK TEST DAY — Attempt full Tier 1 mock (100 Qs/60 min) in your free time today</div>`:'';
+
+  // Build lec HTML (non-interactive template, events attached via JS after render)
+  function lecItem(key,color,name,sub,time,dark){
+    const done=!!chk[key];
+    const chkStyle=done?`background:${color};border-color:${color}`:`border-color:${color}33`;
+    return `<div class="lec${done?' done':''}${dark?' special-lec':''}" data-key="${key}" onclick="handleTog(this)">
+      <div class="chk${done?' on':''}" style="${chkStyle}">${done?'✓':''}</div>
+      <div class="accent-bar" style="background:${color};height:38px"></div>
+      <div class="lec-body">
+        <div class="ln"${dark?' style="color:#fff"':''}>${name}</div>
+        <div class="ls">${sub}</div>
+      </div>
+      <div class="lt" style="color:${color}">${time}</div>
+    </div>`;
+  }
+
+  // Quant
+  let qHTML=`<div class="sec-hdr">
+    <div class="sec-bar" style="background:#3b82f6"></div>
+    <span class="sec-lbl" style="color:#1d4ed8">QUANT — ${d.q.length} LECTURES · ${fmt(qMin)} @ 1.5×</span>
+  </div><div class="lec-list">`;
+  d.q.forEach(q=>{
+    const k=`q_${q[0]}_${q[1]}`;
+    const col=QC[q[0]]||'#3b82f6';
+    qHTML+=lecItem(k,col,`${q[0]} — L${q[1]}/${QT[q[0]]}`,`${fmt(q[2])} @ 1.5× · ${Math.round(q[1]/QT[q[0]]*100)}% thru`,fmt(q[2]),false);
+  });
+  qHTML+='</div>';
+
+  // GK
+  let gHTML='';
+  if(d.g.length>0){
+    gHTML=`<div class="sec-hdr">
+      <div class="sec-bar" style="background:#f59e0b"></div>
+      <span class="sec-lbl" style="color:#d97706">GK/GS — ${d.g.length} LECTURES · ${fmt(gMin)} @ 1.5×</span>
+    </div><div class="lec-list">`;
+    d.g.forEach(g=>{
+      const k=`g_${g[0]}_${g[1]}`;
+      const col=GC[g[0]]||'#f59e0b';
+      gHTML+=lecItem(k,col,`${g[0]} — L${g[1]}/${GT[g[0]]}`,`${fmt(g[2])} @ 1.5× · ${Math.round(g[1]/GT[g[0]]*100)}% thru`,fmt(g[2]),false);
+    });
+    gHTML+='</div>';
+  }
+
+  // Reasoning
+  let rHTML=`<div class="sec-hdr">
+    <div class="sec-bar" style="background:#7c3aed"></div>
+    <span class="sec-lbl" style="color:#7c3aed">REASONING</span>
+  </div><div class="lec-list">`;
+  if(d.r){
+    const k=`r_${d.r}`;
+    rHTML+=lecItem(k,'#7c3aed',`${d.r} — One Shot`,`${fmt(rMin)} @ 1.5× · Complete in one sitting`,fmt(rMin),false);
+  } else {
+    rHTML+=`<div class="empty-note">All 25 topics done ✓<br>Use this slot for Reasoning PYQs (25 Qs / 30 min)</div>`;
+  }
+  rHTML+='</div>';
+
+  // English
+  const ek=`eng_${sel}`;
+  let eHTML=`<div class="sec-hdr">
+    <div class="sec-bar" style="background:#10b981"></div>
+    <span class="sec-lbl" style="color:#16a34a">ENGLISH — DAILY (1h 30m)</span>
+  </div><div class="lec-list">
+    <div class="lec eng-lec${chk[ek]?' done':''}" data-key="${ek}" onclick="handleTog(this)">
+      <div class="chk${chk[ek]?' on':''}" style="${chk[ek]?'background:#16a34a;border-color:#16a34a':'border-color:#bbf7d0'}">
+        ${chk[ek]?'✓':''}</div>
+      <div class="accent-bar" style="background:#10b981;height:44px"></div>
+      <div class="lec-body">
+        <div class="ln${chk[ek]?' done':''}">Daily English Session</div>
+        <div class="ls">25 vocab · 30 error detection · 2 RC passages · PYQs</div>
+      </div>
+      <div class="lt" style="color:#16a34a">1h30m</div>
+    </div>
+  </div>`;
+
+  // Nav
+  const nav=`<div class="nav-row">
+    ${sel>1?`<button class="nav-prev" onclick="goDay(${sel-1})">← Day ${sel-1}</button>`:''}
+    ${sel<50?`<button class="nav-next" onclick="goDay(${sel+1})">Day ${sel+1} →</button>`:''}
+  </div>`;
+
+  return g+card+mock+qHTML+gHTML+rHTML+eHTML+nav;
+}
+
+// Global toggle handler (no re-render needed)
+function handleTog(el){
+  const k=el.dataset.key;
+  chk[k]=!chk[k]; save();
+  const chkEl=el.querySelector('.chk');
+  if(chk[k]){
+    el.classList.add('done');
+    chkEl.classList.add('on');
+    chkEl.innerHTML='✓';
+    // derive color from style
+    const accent=el.querySelector('.accent-bar');
+    if(accent){const col=accent.style.background;chkEl.style.background=col;chkEl.style.borderColor=col;}
+  } else {
+    el.classList.remove('done');
+    chkEl.classList.remove('on');
+    chkEl.innerHTML='';
+    chkEl.style.background='';
+    const accent=el.querySelector('.accent-bar');
+    if(accent){chkEl.style.borderColor=accent.style.background+'33';}
+  }
+  renderHeader();
+  updateDayBtn(sel);
+}
+
+// ============ TIMETABLE ============
+function renderTimetable(){
+  const typeStyle={
+    q:{bg:'#eff6ff',border:'#bfdbfe',dot:'#3b82f6'},
+    gk:{bg:'#fffbeb',border:'#fde68a',dot:'#f59e0b'},
+    r:{bg:'#faf5ff',border:'#ddd6fe',dot:'#7c3aed'},
+    eng:{bg:'#f0fdf4',border:'#bbf7d0',dot:'#16a34a'},
+    pyq:{bg:'#fff1f2',border:'#fecdd3',dot:'#ef4444'},
+    rev:{bg:'#f8fafc',border:'#e2e8f0',dot:'#475569'},
+    brk:{bg:'#fafafa',border:'#e5e7eb',dot:'#9ca3af'},
+  };
+  let html=`<div class="tt-hero">
+    <div class="tt-hero-tag">DAILY SCHEDULE</div>
+    <div class="tt-hero-title">YOUR DAILY WAR PLAN</div>
+    <div class="tt-hero-sub">7.7 hrs of lectures + 2.5 hrs PYQ/revision = 10.2 hrs/day<br>
+    You save 182 hrs vs 1× speed — all goes into PYQs & revision</div>
+    <div class="speed-badge">⚡ 1.5× SPEED ACTIVE — 75min → 50min · 60min → 40min</div>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>QUANT</div>
+    <div class="leg"><div class="leg-dot" style="background:#16a34a"></div>ENGLISH</div>
+    <div class="leg"><div class="leg-dot" style="background:#f59e0b"></div>GK/GS</div>
+    <div class="leg"><div class="leg-dot" style="background:#7c3aed"></div>REASONING</div>
+    <div class="leg"><div class="leg-dot" style="background:#ef4444"></div>PYQ</div>
+    <div class="leg"><div class="leg-dot" style="background:#475569"></div>REVISION</div>
+  </div>
+  <div class="tt-list">`;
+  TT.forEach(row=>{
+    const s=typeStyle[row.type]||typeStyle.brk;
+    html+=`<div class="tt-row" style="background:${s.bg};border-color:${s.border}">
+      <div class="tt-dot" style="background:${s.dot}"></div>
+      <div><div class="tt-slot">${row.slot}</div><div class="tt-act">${row.act}</div></div>
+    </div>`;
+  });
+  html+=`</div><div class="rules-box"><div class="rules-tag">⚠ NON-NEGOTIABLE RULES</div>`;
+  RULES.forEach((r,i)=>{html+=`<div class="rule"><span class="rn">${i+1}.</span><span>${r}</span></div>`;});
+  html+=`</div>`;
+  return html;
+}
+
+// ============ PROGRESS ============
+function renderProgress(){
+  const {pct,dn,tot}=overall();
+  const dc=doneCount();
+  let html=`<div class="overview-grid">
+    <div class="ov-card"><div class="ov-val" style="color:#d97706">${pct}%</div>
+      <div class="ov-lbl">OVERALL</div><div class="ov-sub">${dn}/${tot} items</div></div>
+    <div class="ov-card"><div class="ov-val" style="color:#16a34a">${dc}</div>
+      <div class="ov-lbl">DAYS DONE</div><div class="ov-sub">${50-dc} remaining</div></div>
+  </div>`;
+
+  html+=`<div class="prog-section-lbl" style="color:#1d4ed8">▌ QUANT TOPICS</div>`;
+  Object.entries(QT).forEach(([t,total])=>{
+    const done=PLAN.flatMap(d=>d.q).filter(q=>q[0]===t&&chk[`q_${q[0]}_${q[1]}`]).length;
+    const p=Math.round(done/total*100);const col=QC[t]||'#3b82f6';
+    html+=`<div class="prog-item">
+      <div class="prog-top">
+        <div class="prog-name-row"><div class="prog-dot" style="background:${col}"></div>
+          <span class="prog-name">${t}</span></div>
+        <span class="prog-count" style="color:${col}">${done}/${total}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${col}"></div></div>
+      <div class="prog-sub">${p}% · ${fmt(done*(t.includes('Geometry')||t.includes('Mensuration')||t.includes('Trigonometry')||t.includes('Profit')||t.includes('Work')||t.includes('Distance')?53:t.includes('Simplification')||t.includes('Statistics')||t.includes('Probability')?47:50))} watched</div>
+    </div>`;
+  });
+
+  html+=`<div class="prog-section-lbl" style="color:#d97706;margin-top:8px">▌ GK/GS TOPICS</div>`;
+  Object.entries(GT).forEach(([t,total])=>{
+    const done=PLAN.flatMap(d=>d.g).filter(g=>g[0]===t&&chk[`g_${g[0]}_${g[1]}`]).length;
+    const p=Math.round(done/total*100);const col=GC[t]||'#f59e0b';
+    html+=`<div class="prog-item">
+      <div class="prog-top">
+        <div class="prog-name-row"><div class="prog-dot" style="background:${col}"></div>
+          <span class="prog-name">${t}</span></div>
+        <span class="prog-count" style="color:${col}">${done}/${total}</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${col}"></div></div>
+    </div>`;
+  });
+
+  html+=`<div class="prog-section-lbl" style="color:#7c3aed;margin-top:8px">▌ REASONING (25 ONE-SHOTS)</div>
+  <div class="r-grid">`;
+  PLAN.filter(p=>p.r).forEach(p=>{
+    const done=!!chk[`r_${p.r}`];
+    html+=`<div class="r-card${done?' rdone':''}">
+      <div class="r-name" style="${done?'color:#16a34a':'color:#374151'}">${done?'✓ ':'○ '}${p.r}</div>
+      <div class="r-day">Day ${p.day} · ${fmt(p.rm)}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  const ed=PLAN.filter(p=>chk[`eng_${p.day}`]).length;
+  html+=`<div class="prog-section-lbl" style="color:#16a34a;margin-top:4px">▌ ENGLISH (${ed}/50 sessions)</div>
+  <div class="eng-grid">`;
+  PLAN.forEach(p=>{
+    const done=!!chk[`eng_${p.day}`];
+    html+=`<div class="eng-sq${done?' done':''}">${done?'✓':p.day}</div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+// ============ MAIN RENDER ============
+function renderMain(){
+  renderHeader();
+  const el=document.getElementById('main');
+  if(curTab==='tracker') el.innerHTML=renderTracker();
+  else if(curTab==='timetable') el.innerHTML=renderTimetable();
+  else el.innerHTML=renderProgress();
+}
+
+renderMain();
+
+// ============ SERVICE WORKER (OFFLINE) ============
+if('serviceWorker' in navigator){
+  const swCode=`
+const CACHE='ssc-war-v1';
+const FONTS=[
+  'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Orbitron:wght@700;900&display=swap'
+];
+self.addEventListener('install',e=>{
+  e.waitUntil(
+    caches.open(CACHE).then(c=>c.addAll(FONTS).catch(()=>{}))
+  );
+  self.skipWaiting();
+});
+self.addEventListener('activate',e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch',e=>{
+  e.respondWith(
+    caches.match(e.request).then(cached=>{
+      if(cached) return cached;
+      return fetch(e.request).then(res=>{
+        if(res && res.status===200){
+          const clone=res.clone();
+          caches.open(CACHE).then(c=>c.put(e.request,clone));
+        }
+        return res;
+      }).catch(()=>cached||new Response('Offline',{status:503}));
+    })
+  );
+});
+`;
+  const blob=new Blob([swCode],{type:'text/javascript'});
+  const swUrl=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl,{scope:'./'}).catch(()=>{});
+}
+</script>
+</body>
+</html>
